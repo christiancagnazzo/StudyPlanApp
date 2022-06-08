@@ -1,0 +1,96 @@
+.accordion-button:not(.collapsed) {
+    font-weight: bold !important;
+    /* background-color: #e6e6e6;*/
+    background-color: orange !important;
+    color: black !important;
+
+}
+
+.accordion-button:focus {
+    border-color: black !important;
+    box-shadow: 0 0 0 0  !important;
+}
+
+.accordion-button {
+    /*font-weight: bold;*/
+    /* background-color: #e6e6e6; */
+    background-color: white  !important;
+    padding: 0.4em  !important;
+}
+
+.accordion-button:not(.collapsed)::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%27%23212529%27%3e%3cpath fill-rule=%27evenodd%27 d=%27M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z%27/%3e%3c/svg%3e")  !important;
+}
+
+.accordion-button:not(.collapsed)::after .header {
+    background-image: none  !important;
+}
+
+.bold {
+    font-weight: bold  !important;
+    font-style: italic  !important;
+}
+
+.custom-col {
+    border: 1px  !important;
+    border-color: black  !important;
+}
+
+.clickable {
+    cursor: pointer  !important;
+}
+
+h6 {
+    color: aliceblue  !important;
+}
+
+.code {
+    font-size: 10pt  !important;
+}
+
+.center {
+    text-align: center  !important;
+    vertical-align: middle  !important;
+}
+
+u {
+    color: black  !important;
+    font-weight: bold  !important;
+}
+
+.navbar-text {
+    margin-right: 5px  !important;
+}
+
+.cust {
+    padding-right: 0px  !important;
+    padding-left: 0px  !important;
+}
+
+.no-pad-r {
+    padding-right: 0px  !important;
+}
+
+.custom-card {
+    border-radius: 1  !important;
+    border-color: orange  !important;
+    padding: 0  !important;
+    margin-bottom: 6px  !important;
+}
+
+.btn-outline-warning {
+    color: black  !important;
+}
+
+.type {
+    background-color: darkorange  !important;
+}
+
+.hm {
+    color: black !important;
+    text-decoration: underline !important;
+}
+
+.disabled-link {
+    pointer-events: none  !important;
+}
