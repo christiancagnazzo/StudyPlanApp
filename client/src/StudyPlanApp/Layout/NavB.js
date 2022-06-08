@@ -5,10 +5,8 @@ import { UserContext } from '../UserContext';
 import '../../css.css'
 
 function NavB(props) {
-    //const user = useContext(UserContext);
-    /* TEMP !!!! */
-    const user = undefined;
- 
+    const user = useContext(UserContext);
+    
     return (
         <Navbar bg="warning" >
             <Container>

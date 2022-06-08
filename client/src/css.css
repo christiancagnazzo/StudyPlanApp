@@ -94,3 +94,12 @@ u {
 .disabled-link {
     pointer-events: none  !important;
 }
+
+.head {
+   /* background-color: rgb(173, 143, 88);*/
+    font-weight: bold;
+    font-style: italic;
+    padding: 4px;
+    border-radius: 6px;
+
+}

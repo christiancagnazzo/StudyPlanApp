@@ -12,42 +12,23 @@ function CourseList(props) {
             <Container fluid className='no-pad-r'>
                 <Row className='d-flex align-items-center'>
                     <Col>
-                        <Container fluid>
-                            <Row>
-                                <Col className='col-1 col-md-1 '></Col>
-                                <Col className='col-2 col-md-2'>Code</Col>
-                                <Col className='col-4 col-md-4'>Name</Col>
-                                <Col className='col-2 col-md-2 text-center'>CFU</Col>
-                                <Col className='col-2 col-md-2 text-center'>Students</Col>
-                                <Col className='col-1 col-md-1 text-center'>Limit</Col>
-                                <Col className='col-1 col-md-1 text-center'></Col>
-                            </Row>
+                        <Container className="head mb-1">
+                            <Container fluid>
+                                <Row>
+                                    <Col className="col-1 col-md-1"></Col>
+                                    <Col className="col-2 col-md-2">Code</Col>
+                                    <Col className="col-4 col-md-4">Name</Col>
+                                    <Col className="col-2 col-md-2 text-center">CFU</Col>
+                                    <Col className="col-2 col-md-2 text-center">Students</Col>
+                                    <Col className="col-1 col-md-1 text-center">Max</Col>
+                                </Row>
+                            </Container>
                         </Container>
-                        {/**
-                        <Accordion>
-                            <Accordion.Item >
-                                <Accordion.Header >
-                                    <Container fluid>
-                                        <Row>
-                                            <Col className='col-1 col-md-1 '></Col>
-                                            <Col className='col-2 col-md-2'>Code</Col>
-                                            <Col className='col-4 col-md-4'>Name</Col>
-                                            <Col className='col-2 col-md-2 text-center'>CFU</Col>
-                                            <Col className='col-2 col-md-2 text-center'>Students</Col>
-                                            <Col className='col-1 col-md-1 text-center'>Max</Col>
-                                        </Row>
-                                    </Container>
-                                </Accordion.Header>
-                            </Accordion.Item>
-                        </Accordion>
- */}
                     </Col>
-
                     <Col className='col-1 px-0 text-start'></Col>
-
                 </Row>
 
-                {props.courses.map((c) => <CourseRow updateCourseListInfoAdd={props.updateCourseListInfoAdd} setCourses={props.setCourses} studyPlan={props.studyPlan} setStudyPlan={props.setStudyPlan} course={c} key={c.code} />)}
+                {props.courses.map((c) => <CourseRow course={c} key={c.code} />)}
             </Container>
         </>
     )
@@ -82,11 +63,13 @@ function CourseRow(props) {
                                     </Container>
                                 </Accordion.Header>
                                 <Accordion.Body>
+                                    {/*magari dire quale corso preparatorio è TODOOO """"" */}
                                     {location.pathname === '/logged-home/edit' && props.course.incompatible ? <Alert variant='danger'>The course is incompatible with one of the following courses included in the study plan</Alert> : null}
                                     {location.pathname === '/logged-home/edit' && props.course.added ? <Alert variant='success'>Course already added</Alert> : null}
-                                    {/*magari dire quale*/location.pathname === '/logged-home/edit' && props.course.prep ? <Alert variant='primary'>The course is preparatory to one of the courses included in the study plan and must be selected</Alert> : null}
+                                    {location.pathname === '/logged-home/edit' && props.course.prep ? <Alert variant='primary'>The course is preparatory to one of the courses included in the study plan and must be selected</Alert> : null}
                                     {location.pathname === '/logged-home/edit' && props.course.full ? <Alert variant='danger'>Course is full</Alert> : null}
                                     <Table>
+                                        {/* layout più carino TODOOOOOOO */}
                                         <thead>
                                             <tr>
                                                 <th>Incompatible courses</th>
@@ -97,6 +80,7 @@ function CourseRow(props) {
                                             <tr>
                                                 <td></td>
                                                 <td>
+                                                    {/* nome TODOOOOOOO */}
                                                     {props.course.preparatory ? props.course.preparatory : ""}
                                                 </td>
                                             </tr>
@@ -104,7 +88,7 @@ function CourseRow(props) {
                                                 return (
                                                     <tr key={c.code}>
                                                         <td>
-                                                            {c.code+" "+c.name}
+                                                            {c.code + " " + c.name}
                                                         </td>
                                                     </tr>)
                                             })}
@@ -119,7 +103,7 @@ function CourseRow(props) {
 
                 <Col className='col-1 px-0 text-start'>
                     {location.pathname === '/logged-home/edit' && !props.course.added && !props.course.incompatible && !props.course.full && props.studyPlan.type !== '-' ?
-                        <PlusCircleFill className='clickable' onClick={() => addCourseToStudyPlan()}></PlusCircleFill> : null}
+                        <PlusCircleFill className='clickable' onClick={() => {}}></PlusCircleFill> : null}
                 </Col>
 
             </Row>
@@ -127,11 +111,6 @@ function CourseRow(props) {
 
         </>
     )
-
-    function addCourseToStudyPlan() {
-        props.updateCourseListInfoAdd(props.course);
-        props.setStudyPlan((s) => { return Object.assign({}, s, { cfu: s.cfu + props.course.cfu, courses: [...(s.courses), props.course] }) });
-    }
 }
 
 export { CourseList };
