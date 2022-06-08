@@ -1,5 +1,6 @@
 # dependencies
 node_modules/
+script.js
 
 # misc
 .DS_Store
