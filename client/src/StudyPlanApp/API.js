@@ -75,6 +75,7 @@ async function logIn(credentials) {
         },
         body: JSON.stringify(credentials),
     });
+    
     if (response.ok) {
         const user = await response.json();
         return user;

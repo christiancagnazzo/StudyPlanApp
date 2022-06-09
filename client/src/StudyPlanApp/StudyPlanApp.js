@@ -6,7 +6,7 @@ import { NavB } from './Layout/NavB'
 import { InitialLoading, NotFoundLayout, ErrorLayout } from './Layout/Layout';
 import React, { useEffect, useState } from 'react';
 import API from './API';
-import { Routes, Route, Navigate, useNavigate} from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { LoginForm } from './Layout/Login'
 import { UserContext } from './UserContext';
 import { Container } from 'react-bootstrap';
@@ -23,10 +23,8 @@ function StudyPlanApp() {
     const navigate = useNavigate();
 
     function handleError(err) {
-        /* TODO */
-        //setErrorMessage(err);
-        //navigate('/error');
-        console.log(err)
+        setErrorMessage(err);
+        navigate('/error');
     }
 
     /* SET ALL COURSES */
@@ -54,7 +52,8 @@ function StudyPlanApp() {
                 setLoggedIn(true);
                 setUser(user);
             } catch (err) {
-                console.log(err) // TODOOOO !!!!
+                setLoggedIn(false);
+                setUser(undefined); 
             }
         };
 
@@ -78,7 +77,7 @@ function StudyPlanApp() {
         await API.logOut();
         setLoggedIn(false);
         setUser(undefined);
-        // setInitialCoursesLoading(true); necessario?? TODOO
+        setInitialCoursesLoading(true); 
         navigate('/');
     }
 

@@ -10,7 +10,7 @@ const db = new sqlite.Database('PSDB.db', (err) => {
 // get course by code
 exports.getCourse = (code) => {
     return new Promise((resolve, reject) => {
-        const sql = 'SELECT * FROM course WHERE code = ?';
+        const sql = 'SELECT C1.*, C2.name as prepName  FROM course C1 left join course C2 on c1.preparatory = c2.code WHERE c1.code = ?';
         db.get(sql, [code], (err, row) => {
             if (err) {
                 reject(err);
@@ -19,7 +19,7 @@ exports.getCourse = (code) => {
             if (!row)
                 reject()
             else {
-                const course = { code: row.code, name: row.name, cfu: row.cfu, preparatory: row.preparatory, maxStudents: row.maxStudents }
+                const course = { code: row.code, name: row.name, cfu: row.cfu, preparatory: {code: row.preparatory, name: row.prepName}, maxStudents: row.maxStudents }
                 resolve(course);
             }
         });
@@ -29,13 +29,13 @@ exports.getCourse = (code) => {
 // get all courses
 exports.allCourses = () => {
     return new Promise((resolve, reject) => {
-        const sql = 'SELECT * FROM course';
+        const sql = 'SELECT C1.*, C2.name as prepName  FROM course C1 left join course C2 on c1.preparatory = c2.code';
         db.all(sql, [], (err, rows) => {
             if (err) {
                 reject(err);
                 return;
             }
-            const courses = rows.map((e) => ({ code: e.code, name: e.name, cfu: e.cfu, preparatory: e.preparatory, maxStudents: e.maxStudents }));
+            const courses = rows.map((e) => ({ code: e.code, name: e.name, cfu: e.cfu, preparatory: {code: e.preparatory, name: e.prepName}, maxStudents: e.maxStudents }));
             resolve(courses);
         });
     });

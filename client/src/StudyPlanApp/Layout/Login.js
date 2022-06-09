@@ -1,6 +1,7 @@
 import { Form, Button, Alert, Container, Row, Col } from 'react-bootstrap';
 import { useState } from 'react';
-
+var validator = require("email-validator");
+ 
 function LoginForm(props) {
     const [username, setUsername] = useState('s100100@polito.it');
     const [password, setPassword] = useState('1234');
@@ -11,17 +12,25 @@ function LoginForm(props) {
         setErrorMessage('');
         const credentials = { username, password };
 
-        // SOME VALIDATION lato client, ADD MORE!!! TODOOOOOO
         let valid = true;
-        if (username === '' || password === '')
+        let msg = '';
+
+        if (!username || username === '' || !validator.validate(username)){
             valid = false;
+            msg += 'Username must be a valid email!\r\n'
+        }
+
+        if (!password || password === ''){
+            valid = false;
+            msg += 'Password must be not empty!'
+        }
+            
 
         if (valid) {
             props.login(credentials);
         }
         else {
-            // show a better error message... TODOOOOO
-            setErrorMessage('Error(s) in the form, please fix it.')
+            setErrorMessage(msg);
         }
     };
 

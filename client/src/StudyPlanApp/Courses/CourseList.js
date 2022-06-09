@@ -63,13 +63,12 @@ function CourseRow(props) {
                                     </Container>
                                 </Accordion.Header>
                                 <Accordion.Body>
-                                    {/*magari dire quale corso preparatorio è TODOOO """"" */}
+                                    {/*magari dire quale corso preparatorio è TODOOO  */}
                                     {location.pathname === '/logged-home/edit' && props.course.incompatible ? <Alert variant='danger'>The course is incompatible with one of the following courses included in the study plan</Alert> : null}
                                     {location.pathname === '/logged-home/edit' && props.course.added ? <Alert variant='success'>Course already added</Alert> : null}
                                     {location.pathname === '/logged-home/edit' && props.course.prep ? <Alert variant='primary'>The course is preparatory to one of the courses included in the study plan and must be selected</Alert> : null}
                                     {location.pathname === '/logged-home/edit' && props.course.full ? <Alert variant='danger'>Course is full</Alert> : null}
                                     <Table>
-                                        {/* layout più carino TODOOOOOOO */}
                                         <thead>
                                             <tr>
                                                 <th>Incompatible courses</th>
@@ -80,8 +79,7 @@ function CourseRow(props) {
                                             <tr>
                                                 <td></td>
                                                 <td>
-                                                    {/* nome TODOOOOOOO */}
-                                                    {props.course.preparatory ? props.course.preparatory : ""}
+                                                    {props.course.preparatory.code ? props.course.preparatory.code+" "+props.course.preparatory.name : ""}
                                                 </td>
                                             </tr>
                                             {props.course.incompatibles.map((c) => {
