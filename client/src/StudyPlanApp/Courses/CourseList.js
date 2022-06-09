@@ -28,7 +28,7 @@ function CourseList(props) {
                     <Col className='col-1 px-0 text-start'></Col>
                 </Row>
 
-                {props.courses.map((c) => <CourseRow course={c} key={c.code} />)}
+                {props.courses.map((c) => <CourseRow course={c} studyPlan={props.studyPlan} setStudyPlan={props.setStudyPlan} updateCourseListInfoAdd={props.updateCourseListInfoAdd} key={c.code} />)}
             </Container>
         </>
     )
@@ -63,7 +63,6 @@ function CourseRow(props) {
                                     </Container>
                                 </Accordion.Header>
                                 <Accordion.Body>
-                                    {/*magari dire quale corso preparatorio è TODOOO  */}
                                     {location.pathname === '/logged-home/edit' && props.course.incompatible ? <Alert variant='danger'>The course is incompatible with one of the following courses included in the study plan</Alert> : null}
                                     {location.pathname === '/logged-home/edit' && props.course.added ? <Alert variant='success'>Course already added</Alert> : null}
                                     {location.pathname === '/logged-home/edit' && props.course.prep ? <Alert variant='primary'>The course is preparatory to one of the courses included in the study plan and must be selected</Alert> : null}
@@ -101,7 +100,7 @@ function CourseRow(props) {
 
                 <Col className='col-1 px-0 text-start'>
                     {location.pathname === '/logged-home/edit' && !props.course.added && !props.course.incompatible && !props.course.full && props.studyPlan.type !== '-' ?
-                        <PlusCircleFill className='clickable' onClick={() => {}}></PlusCircleFill> : null}
+                        <PlusCircleFill className='clickable' onClick={() => {addCourseToStudyPlan()}}></PlusCircleFill> : null}
                 </Col>
 
             </Row>
@@ -109,6 +108,11 @@ function CourseRow(props) {
 
         </>
     )
+
+    function addCourseToStudyPlan() {
+        props.updateCourseListInfoAdd(props.course);
+        props.setStudyPlan((s) => { return Object.assign({}, s, { cfu: s.cfu + props.course.cfu, courses: [...(s.courses), props.course] }) });
+    }
 }
 
 export { CourseList };

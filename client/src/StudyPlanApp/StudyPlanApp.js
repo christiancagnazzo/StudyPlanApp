@@ -1,7 +1,7 @@
 import '../css.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { HomeLayout } from './Layout/Home'
+import { HomeLayout, LoggedHomeLayout } from './Layout/Home'
 import { NavB } from './Layout/NavB'
 import { InitialLoading, NotFoundLayout, ErrorLayout } from './Layout/Layout';
 import React, { useEffect, useState } from 'react';
@@ -11,6 +11,13 @@ import { LoginForm } from './Layout/Login'
 import { UserContext } from './UserContext';
 import { Container } from 'react-bootstrap';
 
+/* TODO
+* capire perche in logged se ricarico va in login !!!!!!!!!!!!!!!
+* salt diverso nel db
+* loggedin context ?? 
+* non posso rimuoverlo se prop ?? oppure controllo dopo dal server
+* QUANDO AGGIUNGI SE HA DELLE PROPEDECUTIA OLTRE A SEGNARARLE SEGNALI ANCHE LUI ?
+*/
 
 function StudyPlanApp() {
     const [courses, setCourses] = useState([]);
@@ -19,7 +26,6 @@ function StudyPlanApp() {
     const [loggedIn, setLoggedIn] = useState(false);
     const [loginMessage, setLoginMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-
     const navigate = useNavigate();
 
     function handleError(err) {
@@ -38,6 +44,7 @@ function StudyPlanApp() {
                         if (a.name > b.name) { return 1; }
                         return 0;
                     })
+                    setErrorMessage('');
                     setCourses(orderedCourses);
                     setInitialCoursesLoading(false);
                 })
@@ -53,7 +60,7 @@ function StudyPlanApp() {
                 setUser(user);
             } catch (err) {
                 setLoggedIn(false);
-                setUser(undefined); 
+                setUser(undefined);
             }
         };
 
@@ -77,7 +84,7 @@ function StudyPlanApp() {
         await API.logOut();
         setLoggedIn(false);
         setUser(undefined);
-        setInitialCoursesLoading(true); 
+        setInitialCoursesLoading(true);
         navigate('/');
     }
 
@@ -93,6 +100,19 @@ function StudyPlanApp() {
                         <Route path="/login" element={<LoginForm login={doLogIn} message={loginMessage} setMessage={setLoginMessage} />} />
                         <Route path="/error" element={errorMessage ? <ErrorLayout message={errorMessage} /> : <NotFoundLayout />} />
                         <Route path="*" element={<NotFoundLayout />} />
+
+                        <Route path="/logged-home" element={
+                            !loggedIn ? <Navigate to='/login' /> : (
+                                initialCoursesLoading ? <InitialLoading /> : <LoggedHomeLayout courses={courses} setCourses={setCourses} setErrorMessage={setErrorMessage}></LoggedHomeLayout>
+                            )
+                        } />
+
+                        <Route path="/logged-home/edit" element={
+                            !loggedIn ? <Navigate to='/login' /> : (
+                                initialCoursesLoading ? <InitialLoading /> : <LoggedHomeLayout setInitialCoursesLoading={setInitialCoursesLoading} courses={courses} setCourses={setCourses} setErrorMessage={setErrorMessage}></LoggedHomeLayout>
+                            )
+                        } />
+
                     </Routes>
 
                 </UserContext.Provider>
