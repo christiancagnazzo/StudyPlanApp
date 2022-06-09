@@ -11,6 +11,7 @@ import { InitialLoading } from './Layout'
 function LoggedHomeLayout(props) {
     const [studyPlan, setStudyPlan] = useState({ type: "-", cfu: 0, mincfu: "-", maxcfu: "-", courses: [] });
     const [initialStudyPlanLoading, setInitialStudyPlanLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -37,7 +38,7 @@ function LoggedHomeLayout(props) {
                     } else
                         setStudyPlan(info); // empty study plan
                     setInitialStudyPlanLoading(false);
-                    props.setErrorMessage('');
+                    props.setErrorMessage([]);
                 })
                 .catch(err => handleError(err))
         }
@@ -90,9 +91,7 @@ function LoggedHomeLayout(props) {
                                             </Link>
                                         </Col>
                                         <Col className='md-auto text-center'>
-                                            <Link className={studyPlan.type === '-' ? 'disabled-link' : ''} to="/">
-                                                <Button disabled={studyPlan.type === '-'} variant='warning'>Delete your study plan</Button>
-                                            </Link>
+                                            <Button onClick={() => deleteStudyPlan()} disabled={studyPlan.type === '-'} variant='warning'>Delete your study plan</Button>
                                         </Col>
                                     </Row>
                                 </Container>
@@ -120,13 +119,26 @@ function LoggedHomeLayout(props) {
                                 }
                             </Row>
 
+                            <Row>
+                                {location.pathname === '/logged-home/edit' && errorMessage.length > 0 ? < Alert variant='danger' onClose={() => setErrorMessage([])} dismissible>
+                                    <ul>
+                                        {errorMessage.map((e, i) => <li key={i}>{e}</li>)}
+                                    </ul>
+                                </Alert> : null}
+                            </Row>
+
                             {location.pathname === '/logged-home/edit' && studyPlan.type !== '-' ?
                                 <Row>
                                     <Col className='md-auto text-center'>
-                                        <Button variant="warning">
+                                        <Button variant="warning" onClick={() => saveStudyPlan()}>
                                             Save
                                         </Button>{' '}
-                                        <Button variant="warning" onClick={() => { props.setInitialCoursesLoading(true); setInitialStudyPlanLoading(true); navigate('/logged-home') }}>
+                                        <Button variant="warning" onClick={() => {
+                                            props.setInitialCoursesLoading(true);
+                                            setInitialStudyPlanLoading(true);
+                                            setErrorMessage('');
+                                            navigate('/logged-home')
+                                        }}>
                                             Cancel
                                         </Button>
                                     </Col>
@@ -139,6 +151,33 @@ function LoggedHomeLayout(props) {
             </Container>
         </>
     );
+
+    function saveStudyPlan() {
+        setErrorMessage([]);
+        API.saveStudyPlan(studyPlan)
+            .then(() => {
+                setInitialStudyPlanLoading(true);
+                props.setInitialCoursesLoading(true);
+                navigate('/logged-home');
+            })
+            .catch(err => {
+                setErrorMessage(err);
+            });
+    }
+
+    function deleteStudyPlan() {
+        setErrorMessage('');
+        API.deleteStudyPlan()
+            .then(() => {
+                setInitialStudyPlanLoading(true);
+                props.setInitialCoursesLoading(true);
+                navigate('/logged-home');
+            })
+            .catch(err => {
+                setErrorMessage(err.message);
+            });
+
+    }
 }
 
 

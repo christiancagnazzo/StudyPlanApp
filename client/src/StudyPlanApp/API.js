@@ -118,7 +118,7 @@ async function getStudyPlanInformation() {
     }
 
     const coursesJson = await resp.json();
-    
+
     studyPlanJson.courses = coursesJson;
     studyPlanJson.cfu = coursesJson.reduce((sum, c) => sum + c.cfu, 0)
 
@@ -126,9 +126,39 @@ async function getStudyPlanInformation() {
 
 }
 
+async function saveStudyPlan(studyPlan) {
+    // call: POST /api/studyPlan
+    const response = await fetch(new URL('studyPlan', APIURL), {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ type: studyPlan.type, courses: studyPlan.courses }),
+    });
+
+    if (!response.ok) { 
+        const error = (await response.json()).error;
+        throw error; 
+    }
+}
+
+async function deleteStudyPlan() {
+    // call: DELETE /api/studyPlan
+    const response = await fetch(new URL('studyPlan', APIURL), {
+        method: 'DELETE',
+        credentials: 'include',
+    });
+
+    if (!response.ok) { 
+        const error = (await response.json()).error;
+        throw new Error(error); 
+    }
+}
+
 /* --------------------------------- */
 
-const API = { getAllCoursesCompleted, logIn, logOut, getUserInfo, getStudyPlanInformation };
+const API = { getAllCoursesCompleted, logIn, logOut, getUserInfo, getStudyPlanInformation, saveStudyPlan, deleteStudyPlan };
 export default API;
 
 

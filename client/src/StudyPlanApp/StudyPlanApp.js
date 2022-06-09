@@ -14,9 +14,7 @@ import { Container } from 'react-bootstrap';
 /* TODO
 * capire perche in logged se ricarico va in login !!!!!!!!!!!!!!!
 * salt diverso nel db
-* loggedin context ?? 
-* non posso rimuoverlo se prop ?? oppure controllo dopo dal server
-* QUANDO AGGIUNGI SE HA DELLE PROPEDECUTIA OLTRE A SEGNARARLE SEGNALI ANCHE LUI ?
+* controlla che a volte errori paino di studi lato server map non funziona (quando modifichi codice e non ricarichi)
 */
 
 function StudyPlanApp() {
@@ -35,7 +33,6 @@ function StudyPlanApp() {
 
     /* SET ALL COURSES */
     useEffect(() => {
-        // TODO:  quando aggiungo nel piano carriera perchè si aggiorna il count studenti !!!
         if (initialCoursesLoading) {
             API.getAllCoursesCompleted()
                 .then((courses) => {
@@ -103,7 +100,7 @@ function StudyPlanApp() {
 
                         <Route path="/logged-home" element={
                             !loggedIn ? <Navigate to='/login' /> : (
-                                initialCoursesLoading ? <InitialLoading /> : <LoggedHomeLayout courses={courses} setCourses={setCourses} setErrorMessage={setErrorMessage}></LoggedHomeLayout>
+                                initialCoursesLoading ? <InitialLoading /> : <LoggedHomeLayout setInitialCoursesLoading={setInitialCoursesLoading} courses={courses} setCourses={setCourses} setErrorMessage={setErrorMessage}></LoggedHomeLayout>
                             )
                         } />
 

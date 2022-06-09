@@ -4,6 +4,7 @@ const sqlite = require('sqlite3');
 
 // open the database
 const db = new sqlite.Database('PSDB.db', (err) => {
+    db.run("PRAGMA foreign_keys = ON");
     if (err) throw err;
 });
 
@@ -24,6 +25,60 @@ exports.studyPlan = (userId) => {
 
             const studyPlan = { id: rows[0].id, type: rows[0].type, mincfu: rows[0].min, maxcfu: rows[0].max };
             resolve(studyPlan);
+        });
+    });
+};
+
+
+// delete study plan by user id
+exports.deleteStudyPlan = (userId) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM studyPlan WHERE user = ?';
+        db.run(sql, [userId], (err, rows) => {
+            if (err) {
+                reject(err);
+                return
+            } else {
+                resolve()
+                return
+            }
+        });
+    });
+};
+
+// create study plan 
+exports.createStudyPlan = (userId, type) => {
+    return new Promise((resolve, reject) => {
+
+        const min = type === 'FULLTIME' ? 60 : 20;
+        const max = type === 'FULLTIME' ? 80 : 40;
+
+        const sql = 'INSERT INTO studyPlan(type, user, min, max) VALUES (?,?,?,?)';
+        db.run(sql, [type, userId, min, max ], function(err){
+            if (err) {
+                reject(err);
+                return
+            } else {
+                resolve(this.lastID);
+                return
+            }
+        });
+    });
+};
+
+// create study plan 
+exports.insertCourseIntoSD = (studyPlanId, courseId) => {
+    return new Promise((resolve, reject) => {
+        
+        const sql = 'INSERT INTO coursesStudyPlan VALUES (?,?)';
+        db.run(sql, [studyPlanId, courseId], function(err) {
+            if (err) {
+                reject(err);
+                return
+            } else {
+                resolve(this.changes);
+                return
+            }
         });
     });
 };
@@ -72,3 +127,4 @@ exports.studyPlanCourses = (userId) => {
         });
     });
 };
+

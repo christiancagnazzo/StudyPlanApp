@@ -99,7 +99,9 @@ function CourseRow(props) {
                 </Col>
 
                 <Col className='col-1 px-0 text-start'>
-                    {location.pathname === '/logged-home/edit' && !props.course.added && !props.course.incompatible && !props.course.full && props.studyPlan.type !== '-' ?
+                    { /* PERMETTERE LO STESSO E SERVER RIFIUTA O NON PERMETTERE MAI ??? TODOOOO */ }
+                    {/* location.pathname === '/logged-home/edit' && !props.course.added && !props.course.incompatible && !props.course.full && props.studyPlan.type !== '-' ? */}
+                    { location.pathname === '/logged-home/edit' && !props.course.added && props.studyPlan.type !== '-' ? 
                         <PlusCircleFill className='clickable' onClick={() => {addCourseToStudyPlan()}}></PlusCircleFill> : null}
                 </Col>
 
