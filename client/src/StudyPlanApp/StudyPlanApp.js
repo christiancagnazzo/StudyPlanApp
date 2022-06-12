@@ -11,11 +11,6 @@ import { LoginForm } from './Layout/Login'
 import { UserContext } from './UserContext';
 import { Container } from 'react-bootstrap';
 
-/* TODO
-* capire perche in logged se ricarico va in login !!!!!!!!!!!!!!!
-* salt diverso nel db
-* controlla che a volte errori paino di studi lato server map non funziona (quando modifichi codice e non ricarichi)
-*/
 
 function StudyPlanApp() {
     const [courses, setCourses] = useState([]);
@@ -79,8 +74,9 @@ function StudyPlanApp() {
 
     const doLogOut = async () => {
         await API.logOut();
-        setLoggedIn(false);
+        setLoggedIn(true);
         setUser(undefined);
+        setCourses([]);
         setInitialCoursesLoading(true);
         navigate('/');
     }
@@ -99,14 +95,14 @@ function StudyPlanApp() {
                         <Route path="*" element={<NotFoundLayout />} />
 
                         <Route path="/logged-home" element={
-                            !loggedIn ? <Navigate to='/login' /> : (
-                                initialCoursesLoading ? <InitialLoading /> : <LoggedHomeLayout setInitialCoursesLoading={setInitialCoursesLoading} courses={courses} setCourses={setCourses} setErrorMessage={setErrorMessage}></LoggedHomeLayout>
+                            initialCoursesLoading ? <InitialLoading /> : (
+                                !loggedIn ? <Navigate to='/login' /> : <LoggedHomeLayout setInitialCoursesLoading={setInitialCoursesLoading} courses={courses} setCourses={setCourses} setErrorMessage={setErrorMessage}></LoggedHomeLayout>
                             )
                         } />
 
                         <Route path="/logged-home/edit" element={
-                            !loggedIn ? <Navigate to='/login' /> : (
-                                initialCoursesLoading ? <InitialLoading /> : <LoggedHomeLayout setInitialCoursesLoading={setInitialCoursesLoading} courses={courses} setCourses={setCourses} setErrorMessage={setErrorMessage}></LoggedHomeLayout>
+                            initialCoursesLoading ? <InitialLoading /> : (
+                                !loggedIn ? <Navigate to='/login' /> : <LoggedHomeLayout setInitialCoursesLoading={setInitialCoursesLoading} courses={courses} setCourses={setCourses} setErrorMessage={setErrorMessage}></LoggedHomeLayout>
                             )
                         } />
 

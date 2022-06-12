@@ -85,8 +85,7 @@ router.post('/studyPlan', isLoggedIn, async (req, res) => {
     /* check limit */
     if (courses[i].maxStudents) {
       let students = await courseDao.studentsCourse(courses[i].code);
-      console.log(students);
-      if (students !== courses[i].maxStudents)
+      if (students === courses[i].maxStudents)
         error.push("Course '" + courses[i].name + "' is full");
     }
 

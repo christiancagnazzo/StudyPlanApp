@@ -136,7 +136,7 @@ function LoggedHomeLayout(props) {
                                         <Button variant="warning" onClick={() => {
                                             props.setInitialCoursesLoading(true);
                                             setInitialStudyPlanLoading(true);
-                                            setErrorMessage('');
+                                            setErrorMessage([]);
                                             navigate('/logged-home')
                                         }}>
                                             Cancel
@@ -166,7 +166,7 @@ function LoggedHomeLayout(props) {
     }
 
     function deleteStudyPlan() {
-        setErrorMessage('');
+        setErrorMessage([]);
         API.deleteStudyPlan()
             .then(() => {
                 setInitialStudyPlanLoading(true);

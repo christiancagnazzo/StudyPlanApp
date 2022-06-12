@@ -51,8 +51,8 @@ function CourseRow(props) {
                                             <Col className='col-1 col-md-1 '>
                                                 {location.pathname === '/logged-home/edit' && props.course.incompatible ? <ExclamationCircleFill fill='red' /> : null}
                                                 {location.pathname === '/logged-home/edit' && props.course.added ? <CheckCircleFill fill='green' /> : null}
-                                                {location.pathname === '/logged-home/edit' && props.course.prep ? <BookmarkPlusFill fill='blue' /> : null}
-                                                {location.pathname === '/logged-home/edit' && props.course.full ? <ExclamationCircleFill fill='red' /> : null}
+                                                {location.pathname === '/logged-home/edit' && (props.course.preparatory.code !== null && !props.studyPlan.courses.some( e => e.code === props.course.preparatory.code)) ? <BookmarkPlusFill fill='blue' /> : null}
+                                                {location.pathname === '/logged-home/edit' && props.course.full && !props.course.added ? <ExclamationCircleFill fill='red' /> : null}
                                             </Col>
                                             <Col className='col-2 col-md-2 code'>{props.course.code}</Col>
                                             <Col className='col-4 col-md-4 '>{props.course.name}</Col>
@@ -65,8 +65,8 @@ function CourseRow(props) {
                                 <Accordion.Body>
                                     {location.pathname === '/logged-home/edit' && props.course.incompatible ? <Alert variant='danger'>The course is incompatible with one of the following courses included in the study plan</Alert> : null}
                                     {location.pathname === '/logged-home/edit' && props.course.added ? <Alert variant='success'>Course already added</Alert> : null}
-                                    {location.pathname === '/logged-home/edit' && props.course.prep ? <Alert variant='primary'>The course is preparatory to one of the courses included in the study plan and must be selected</Alert> : null}
-                                    {location.pathname === '/logged-home/edit' && props.course.full ? <Alert variant='danger'>Course is full</Alert> : null}
+                                    {location.pathname === '/logged-home/edit' && (props.course.preparatory.code !== null && !props.studyPlan.courses.some( e => e.code === props.course.preparatory.code)) ? <Alert variant='primary'>To be able to insert the course you must first insert its preparatory course in the study plan</Alert> : null}
+                                    {location.pathname === '/logged-home/edit' && props.course.full && !props.course.added ? <Alert variant='danger'>Course is full</Alert> : null}
                                     <Table>
                                         <thead>
                                             <tr>
@@ -99,9 +99,13 @@ function CourseRow(props) {
                 </Col>
 
                 <Col className='col-1 px-0 text-start'>
-                    { /* PERMETTERE LO STESSO E SERVER RIFIUTA O NON PERMETTERE MAI ??? TODOOOO */ }
-                    {/* location.pathname === '/logged-home/edit' && !props.course.added && !props.course.incompatible && !props.course.full && props.studyPlan.type !== '-' ? */}
-                    { location.pathname === '/logged-home/edit' && !props.course.added && props.studyPlan.type !== '-' ? 
+                    { location.pathname === '/logged-home/edit' 
+                    && !props.course.added 
+                    && !props.course.incompatible
+                    && !props.course.full 
+                    && props.studyPlan.type !== '-'
+                    && (props.course.preparatory.code === null || props.studyPlan.courses.some( e => e.code === props.course.preparatory.code))
+                    ? 
                         <PlusCircleFill className='clickable' onClick={() => {addCourseToStudyPlan()}}></PlusCircleFill> : null}
                 </Col>
 

@@ -3,7 +3,7 @@ import { useState } from 'react';
 var validator = require("email-validator");
  
 function LoginForm(props) {
-    const [username, setUsername] = useState('s100100@polito.it');
+    const [username, setUsername] = useState('s1@polito.it');
     const [password, setPassword] = useState('1234');
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -36,7 +36,7 @@ function LoginForm(props) {
 
     return (
         <Container>
-            <Row className='className="justify-content-md-center'>
+            <Row className='justify-content-md-center'>
                 <Col xs lg="3"></Col>
                 <Col className='text-center col-6 mt-3'>
                     <h2>Log-in to create or modify your study plan!</h2>
@@ -52,7 +52,7 @@ function LoginForm(props) {
                             <Form.Label>Password</Form.Label>
                             <Form.Control type='password' value={password} onChange={ev => setPassword(ev.target.value)} />
                         </Form.Group>
-                        <Button variant='warning' className='mt-4' onClick={handleSubmit}>Login</Button>
+                        <Button variant='warning' type='submit' className='mt-4' onClick={handleSubmit}>Login</Button>
                     </Form>
                 </Col>
                 <Col xs lg="3"></Col>

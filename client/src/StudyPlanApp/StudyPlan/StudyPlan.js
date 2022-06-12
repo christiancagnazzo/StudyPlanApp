@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Container, Table, Row, Card, Button, ListGroup, Form } from 'react-bootstrap';
-import { DashCircleFill, ExclamationCircleFill } from "react-bootstrap-icons";
+import { DashCircleFill, EmojiKiss, ExclamationCircleFill, BookmarkCheck } from "react-bootstrap-icons";
 import '../../css.css'
 import { UserContext } from '../UserContext';
 import { useLocation } from 'react-router-dom';
@@ -57,10 +57,15 @@ function CourseRow(props) {
                 <td>{props.course.code}</td>
                 <td>{props.course.name}</td>
                 <td>{props.course.cfu}</td>
-                {location.pathname === '/logged-home/edit' ? <td>{<DashCircleFill onClick={() => removeCourse(props.course.code)} className='clickable' />}</td> : null}
+                {
+                    location.pathname === '/logged-home/edit' && !props.studyPlan.courses.some(e => e.preparatory.code === props.course.code)
+                        ? <td>{<DashCircleFill onClick={() => removeCourse(props.course.code)} className='clickable' />}</td>
+                        : <td><BookmarkCheck fill='blue'/></td>
+                }
             </tr>
         </tbody>
     )
+
 }
 
 function StudentInfo(props) {

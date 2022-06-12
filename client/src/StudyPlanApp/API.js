@@ -2,6 +2,7 @@ const APIURL = new URL('http://localhost:3001/api/');
 
 /* COURSES */
 
+/*
 async function getAllCourses() {
     // call: GET /api/courses
     const response = await fetch(new URL('courses', APIURL));
@@ -35,20 +36,29 @@ async function getStudentsCourse(code) {
         throw new Error("Something wrong. Try reloading the page");
     }
 }
+*/
 
 async function getAllCoursesCompleted() {
-    // return all courses completed (with students number and incompatibily)
-    await new Promise(r => setTimeout(r, 1000)); // to simulate loading
+    await new Promise(r => setTimeout(r, 100)); // to simulate loading
 
-    const res = await getAllCourses();
+    // call: GET /api/courses
+    const response = await fetch(new URL('courses', APIURL));
 
-    for (let i = 0; i < res.length; i++) {
-        res[i].incompatibles = await getIncompatibleCourses(res[i].code);
-        res[i].students = (await getStudentsCourse(res[i].code)).students;
-        res[i].full = res[i].maxStudents ? (res[i].maxStudents == res[i].students ? true : false) : false
+    if (response.ok) {
+        const coursesJson = await response.json();
+        return coursesJson.map((co) => ({ 
+            code: co.code, 
+            name: co.name, 
+            cfu: co.cfu, 
+            preparatory: co.preparatory, 
+            maxStudents: co.maxStudents,
+            incompatibles: co.incompatibles,
+            students: co.students,
+            full: co.full
+        }));
+    } else {
+        throw new Error("Something wrong. Try reloading the page");
     }
-
-    return res;
 }
 
 /* --------------------------------- */
@@ -137,9 +147,9 @@ async function saveStudyPlan(studyPlan) {
         body: JSON.stringify({ type: studyPlan.type, courses: studyPlan.courses }),
     });
 
-    if (!response.ok) { 
+    if (!response.ok) {
         const error = (await response.json()).error;
-        throw error; 
+        throw error;
     }
 }
 
@@ -150,9 +160,9 @@ async function deleteStudyPlan() {
         credentials: 'include',
     });
 
-    if (!response.ok) { 
+    if (!response.ok) {
         const error = (await response.json()).error;
-        throw new Error(error); 
+        throw new Error(error);
     }
 }
 
