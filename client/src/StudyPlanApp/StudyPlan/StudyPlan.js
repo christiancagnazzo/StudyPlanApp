@@ -1,12 +1,12 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { Container, Table, Row, Card, Button, ListGroup, Form } from 'react-bootstrap';
-import { DashCircleFill, EmojiKiss, ExclamationCircleFill, BookmarkCheck } from "react-bootstrap-icons";
+import { Container, Table, Row, Card, ListGroup, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { DashCircleFill, ExclamationCircleFill, BookmarkCheck } from "react-bootstrap-icons";
 import '../../css.css'
 import { UserContext } from '../UserContext';
 import { useLocation } from 'react-router-dom';
 import { useContext } from 'react';
-import API from '../API';
+
 
 function StudyPlan(props) {
     return (
@@ -45,6 +45,10 @@ function CourseRow(props) {
             if (props.course.incompatibles.map((c) => c.code).includes(c.code))
                 c.incompatible = false;
 
+            if (c.maxStudents){
+                c.full = false;
+            }
+
             return c;
         }))
 
@@ -58,9 +62,11 @@ function CourseRow(props) {
                 <td>{props.course.name}</td>
                 <td>{props.course.cfu}</td>
                 {
-                    location.pathname === '/logged-home/edit' && !props.studyPlan.courses.some(e => e.preparatory.code === props.course.code)
+                    location.pathname !== '/logged-home/edit' ? <td></td> : (
+                        !props.studyPlan.courses.some(e => e.preparatory.code === props.course.code)
                         ? <td>{<DashCircleFill onClick={() => removeCourse(props.course.code)} className='clickable' />}</td>
-                        : <td><BookmarkCheck fill='blue'/></td>
+                        : <td><Over></Over></td>
+                    )
                 }
             </tr>
         </tbody>
@@ -88,6 +94,21 @@ function StudentInfo(props) {
                     </ListGroup.Item>
                 </ListGroup>
             </Card>
+        </>
+    )
+}
+
+function Over() {
+    return (
+        <>
+            <OverlayTrigger
+                placement="bottom"
+                overlay={<Tooltip id="button-tooltip-2">The course is preparatory to another one selected in the study plan</Tooltip>}
+            >
+                {({ ref, ...triggerHandler }) => (
+                    <BookmarkCheck {...triggerHandler} ref={ref} fill='blue' />
+                )}
+            </OverlayTrigger>
         </>
     )
 }
