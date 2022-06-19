@@ -1,46 +1,6 @@
 const APIURL = new URL('http://localhost:3001/api/');
 
-/* COURSES */
-
-/*
-async function getAllCourses() {
-    // call: GET /api/courses
-    const response = await fetch(new URL('courses', APIURL));
-
-    if (response.ok) {
-        const coursesJson = await response.json();
-        return coursesJson.map((co) => ({ code: co.code, name: co.name, cfu: co.cfu, preparatory: co.preparatory, maxStudents: co.maxStudents }));
-    } else {
-        throw new Error("Something wrong. Try reloading the page");
-    }
-}
-
-async function getIncompatibleCourses(code) {
-    // call: GET /api/courses/:id/incompatibles
-    const response = await fetch(new URL('courses/' + code + '/incompatibles', APIURL));
-    const coursesJson = await response.json();
-    if (response.ok) {
-        return coursesJson.map((co) => ({ code: co.code, name: co.name, cfu: co.cfu }));
-    } else {
-        throw new Error("Something wrong. Try reloading the page");
-    }
-}
-
-async function getStudentsCourse(code) {
-    // call GET /api/courses/:id/students
-    const response = await fetch(new URL('courses/' + code + '/students', APIURL));
-    const studentsJson = await response.json();
-    if (response.ok) {
-        return studentsJson
-    } else {
-        throw new Error("Something wrong. Try reloading the page");
-    }
-}
-*/
-
 async function getAllCoursesCompleted() {
-    await new Promise(r => setTimeout(r, 100)); // to simulate loading
-
     // call: GET /api/courses
     const response = await fetch(new URL('courses', APIURL));
 
@@ -106,37 +66,32 @@ async function logOut() {
 
 async function getStudyPlanInformation() {
     // call: GET /api/studyplan
-    const response = await fetch(new URL('studyplan', APIURL), {
+    const resp = await fetch(new URL('studyplan', APIURL), {
         method: 'GET',
         credentials: 'include'
     });
 
-    if (response.status === 404) {
+    if (resp.status === 404) {
         return { type: "-", cfu: 0, mincfu: "-", maxcfu: "-", courses: [] };
     }
-
-    const studyPlanJson = await response.json();
-
-    // call: GET /api/studyplan/:code/courses
-    const resp = await fetch(new URL('studyplan/courses', APIURL), {
-        method: 'GET',
-        credentials: 'include'
-    });
 
     if (!resp.ok) {
         throw new Error("Something wrong. Try reloading the page");
     }
 
-    const coursesJson = await resp.json();
-
-    studyPlanJson.courses = coursesJson;
-    studyPlanJson.cfu = coursesJson.reduce((sum, c) => sum + c.cfu, 0)
+    const studyPlanJson = await resp.json();
 
     return studyPlanJson;
 
 }
 
 async function saveStudyPlan(studyPlan) {
+    
+    let courses = [];
+    studyPlan.courses.forEach(element => {
+        courses.push(element.code);
+    });
+
     // call: POST /api/studyPlan
     const response = await fetch(new URL('studyPlan', APIURL), {
         method: 'POST',
@@ -144,8 +99,13 @@ async function saveStudyPlan(studyPlan) {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ type: studyPlan.type, courses: studyPlan.courses }),
+        body: JSON.stringify({ type: studyPlan.type, courses: courses}),
     });
+
+    if (response.status === 422) {
+        const error = {myError: (await response.json()).error};
+        throw error
+    }
 
     if (!response.ok) {
         const error = (await response.json()).error;

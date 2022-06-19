@@ -17,7 +17,7 @@ exports.getCourse = (code) => {
                 return;
             }
             if (!row)
-                reject()
+                reject({custom_msg: "Course "+code+" not found"})
             else {
                 const course = { code: row.code, name: row.name, cfu: row.cfu, preparatory: {code: row.preparatory, name: row.prepName}, maxStudents: row.maxStudents }
                 resolve(course);

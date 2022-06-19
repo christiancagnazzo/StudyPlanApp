@@ -68,7 +68,7 @@ function StudyPlanApp() {
                 navigate('/logged-home');
             })
             .catch(err => {
-                setLoginMessage(err);
+                handleError(err);
             })
     }
 

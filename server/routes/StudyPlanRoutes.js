@@ -13,35 +13,30 @@ const isLoggedIn = async (req, res, next) => {
 }
 /* ------------------------------------ */
 
+// This function is used to format express-validator errors as strings
+const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
+  return `${location} [${param}]: ${msg}`;
+};
+/* ------------------------------------ */
 
-// GET /api/studyplan
-// Get studyplan by user id
-router.get('/studyplan/', isLoggedIn, async (req, res) => {
+
+// GET /api/studyplan/
+// Get the study plan with the courses, if exists
+router.get('/studyplan', isLoggedIn, async (req, res) => {
   const userId = req.user.id;
 
   try {
     let s = await studyPlanDao.studyPlan(userId);
     if (s.error)
-      return res.status(404).json(s)
-    else
-      return res.status(200).json(s)
-  } catch (err) {
-    res.status(500).json({ error: `Database error while retrieving courses: ` + err }).end()
-  }
-});
+      return res.status(404).json(s);
 
-
-// GET /api/studyplan/:code/courses
-// Get all courses of a studyplan identified by user
-router.get('/studyplan/courses', isLoggedIn, async (req, res) => {
-  const userId = req.user.id;
-
-  try {
     let c = await studyPlanDao.studyPlanCourses(userId);
-    if (c.error)
-      return res.status(404).json(c)
-    else
-      return res.status(200).json(c)
+    s.courses = c;
+
+    s.cfu = c.reduce((sum, c) => sum + c.cfu, 0)
+
+    return res.status(200).json(s);
+
   } catch (err) {
     res.status(500).json({ error: `Database error while retrieving courses: ` + err }).end()
   }
@@ -62,70 +57,89 @@ router.delete('/studyplan/', isLoggedIn, async (req, res) => {
 });
 
 // POST /api/studyPlan
-router.post('/studyPlan', isLoggedIn, async (req, res) => {
-
-  const type = req.body.type;
-  const courses = req.body.courses;
-  const userId = req.user.id;
-
-  let error = [];
-
-  /* check type */
-  if (!type || (type !== 'PARTIME' && type !== 'FULLTIME')) {
-    error.push("Type not valid");
-  }
-
-  /* check cfu */
-  const cfu = courses.reduce((sum, c) => sum + c.cfu, 0);
-  if ((type === 'PARTIME' && (cfu < 20 || cfu > 40)) ||
-    (type === 'FULLTIME' && (cfu < 60 || cfu > 80)))
-    error.push("Credits entered higher or lower than the minimum and maximum credits of the career plan type");
-
-  for (let i = 0; i < courses.length; i++) {
-    /* check limit */
-    if (courses[i].maxStudents) {
-      let students = await courseDao.studentsCourse(courses[i].code);
-      if (students === courses[i].maxStudents)
-        error.push("Course '" + courses[i].name + "' is full");
+router.post('/studyPlan', isLoggedIn,
+  [
+    check('type').isString(),
+    check('courses').isArray(),
+    check('courses.*').isString(),
+  ],
+  async (req, res) => {
+    const err = validationResult(req).formatWith(errorFormatter); // format error message
+    if (!err.isEmpty()) {
+      return res.status(422).json({ error: err.array().join(", ") }); // error message is a single string with all error joined together
     }
 
-    /* check preparatory */
-    if (courses[i].preparatory.code && !courses.some(e => e.code === courses[i].preparatory.code)) {
-      error.push("Course '" + courses[i].preparatory.name + "' is preparatory for '" + courses[i].name + "' and must be included");
+    const type = req.body.type;
+    const courses = req.body.courses;
+    const userId = req.user.id;
+
+    let error = [];
+    let sum_cfu = 0;
+
+    /* check type */
+    if (!type || (type !== 'PARTIME' && type !== 'FULLTIME')) {
+      error.push("Type not valid");
     }
 
-    const incompatibles = courses[i].incompatibles;
+    for (let i = 0; i < courses.length; i++) {
 
-    /* check incompatibilies */
-    for (let y = 0; y < incompatibles.length; y++) {
-      if (courses.some(e => e.code === incompatibles[y].code)) {
-        error.push("Course '" + courses[i].name + "' is incompatible with '" + incompatibles[y].name);
+      try {
+
+        let c = await courseDao.getCourse(courses[i]);
+
+        /* check limit */
+        if (c.maxStudents) {
+          let students = await courseDao.studentsCourse(c.code);
+          if (students === c.maxStudents)
+            error.push("Course '" + c.name + "' is full");
+        }
+
+        /* check preparatory */
+        if (c.preparatory.code && !courses.some(e => e.code === c.preparatory.code)) {
+          error.push("Course '" + c.preparatory.name + "' is preparatory for '" + c.name + "' and must be included");
+        }
+
+        const incompatibles = await courseDao.incompatiblesCoursesByCode(c.code);
+
+        /* check incompatibilies */
+        for (let y = 0; y < incompatibles.length; y++) {
+          if (courses.includes(incompatibles[y].code)) {
+            error.push("Course '" + c.name + "' is incompatible with '" + incompatibles[y].name);
+          }
+        }
+
+        sum_cfu += c.cfu;
+      } catch (err) {
+        if (err.custom_msg)
+          error.push(err.custom_msg);
+        return res.status(500).json(err);
       }
-    } // TODO: messaggio di errore doppio !!
-    // TODO: controllare se selezionato due volte?? 
-  };
+    };
 
-  if (error.length > 0)
-    return res.status(422).json({ error: error });
+    /* check cfu */
+    if ((type === 'PARTIME' && (sum_cfu < 20 || sum_cfu > 40)) ||
+      (type === 'FULLTIME' && (sum_cfu < 60 || sum_cfu > 80)))
+      error.push("Credits entered higher or lower than the minimum and maximum credits of the career plan type");
 
-  // TODO MIGLIORARE VALIDAZIONE BODY (CORSI) ??? 
-  // TODO TRANSAZIONE ???
-  // TODO catch ????
+    if (error.length > 0)
+      return res.status(422).json({ error: error });
 
-  await studyPlanDao.deleteStudyPlan(userId);
-  let id = await studyPlanDao.createStudyPlan(userId, req.body.type);
-
-  console.log(id);
-  console.log(courses);
-  for (let i = 0; i < courses.length; i++) {
     try {
-      await studyPlanDao.insertCourseIntoSD(id, courses[i].code)
-    } catch {
-      return res.status(400).end()
-    }
-  }
+      await studyPlanDao.deleteStudyPlan(userId);
+      let id = await studyPlanDao.createStudyPlan(userId, req.body.type);
 
-  return res.status(201).end()
-});
+      for (let i = 0; i < courses.length; i++) {
+        try {
+          await studyPlanDao.insertCourseIntoSD(id, courses[i])
+        } catch (err) {
+          return res.status(500).json(err)
+        }
+      }
+    } catch (err) {
+      return res.status(500).json(err)
+    }
+
+    return res.status(201).end()
+  });
 
 module.exports = router;

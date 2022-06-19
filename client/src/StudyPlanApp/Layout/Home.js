@@ -1,7 +1,7 @@
 import { CourseList } from '../Courses/CourseList';
 import '../../css.css'
 import { StudyPlan, StudentInfo } from '../StudyPlan/StudyPlan';
-import { Container, Row, Col, Button, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Button, Alert, Modal } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import API from '../API';
@@ -91,7 +91,7 @@ function LoggedHomeLayout(props) {
                                             </Link>
                                         </Col>
                                         <Col className='md-auto text-center'>
-                                            <Button onClick={() => deleteStudyPlan()} disabled={studyPlan.type === '-'} variant='warning'>Delete your study plan</Button>
+                                            <DeleteButton/>
                                         </Col>
                                     </Row>
                                 </Container>
@@ -130,9 +130,7 @@ function LoggedHomeLayout(props) {
                             {location.pathname === '/logged-home/edit' && studyPlan.type !== '-' ?
                                 <Row>
                                     <Col className='md-auto text-center'>
-                                        <Button variant="warning" onClick={() => saveStudyPlan()}>
-                                            Save
-                                        </Button>{' '}
+                                        <SaveButton/>{' '}
                                         <Button variant="warning" onClick={() => {
                                             props.setInitialCoursesLoading(true);
                                             setInitialStudyPlanLoading(true);
@@ -161,7 +159,10 @@ function LoggedHomeLayout(props) {
                 navigate('/logged-home');
             })
             .catch(err => {
-                setErrorMessage(err);
+                if (err.myError)
+                    setErrorMessage(err.myError);
+                else
+                    handleError(err);
             });
     }
 
@@ -174,9 +175,69 @@ function LoggedHomeLayout(props) {
                 navigate('/logged-home');
             })
             .catch(err => {
-                setErrorMessage(err.message);
+                handleError(err);
             });
 
+    }
+
+    function DeleteButton() {
+        const [show, setShow] = useState(false);
+
+        const handleClose = () => setShow(false);
+        const handleShow = () => setShow(true);
+
+        return (
+            <>
+                <Button disabled={studyPlan.type === '-'} variant='warning' onClick={handleShow}>
+                    Delete your study plan
+                </Button>
+
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Delete study plan</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Are you sure you want to permanently delete your study plan?</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="outline-dark" onClick={handleClose}>
+                            Close
+                        </Button>
+                        <Button variant='outline-warning' onClick={() => deleteStudyPlan()}>
+                            Confirm
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </>
+        );
+    }
+
+    function SaveButton() {
+        const [show, setShow] = useState(false);
+
+        const handleClose = () => setShow(false);
+        const handleShow = () => setShow(true);
+
+        return (
+            <>
+                <Button variant='warning' onClick={handleShow}>
+                    Save
+                </Button>
+
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Save your study plan</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Are you sure you want to save your study plan?</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="outline-dark" onClick={handleClose}>
+                            Close
+                        </Button>
+                        <Button variant='outline-warning' onClick={() => saveStudyPlan()}>
+                            Confirm
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </>
+        );
     }
 }
 
@@ -197,5 +258,6 @@ const HomeLayout = (props) => {
         </>
     )
 }
+
 
 export { HomeLayout, LoggedHomeLayout }
