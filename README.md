@@ -1,4 +1,4 @@
-# Esame #1: Piano di studi 
+# Exam #1: Piano di studi 
 ## Student: s304045 CAGNAZZO CHRISTIAN DAMIANO 
 
 ## React Client Application Routes
@@ -7,7 +7,7 @@
 - Route `/login`: contiene il form per effettuare il login
 - Route `/home`: contiene la lista dei corsi e le loro informazioni, è raggiungibile anche da utenti non loggati
 - Route `/logged-home`: contiene la lista dei corsi a sinistra e il piano di studi, se esiste, a destra; è raggiungibile solo da utenti non loggati
-- Route `/logged-home/edit`: come logged-home, ma in più abilita i pulsanti per editare il piano di studi e mostra informazioni aggiuntive riguardo ai corsi che non possono essere aggiunti o che sono soggetti ad altri vincoli 
+- Route `/logged-home/edit`: come logged-home, ma in più abilita i pulsanti per editare il piano di studi e mostra informazioni aggiuntive riguardo ai corsi che non possono essere aggiunti o che sono soggetti a vincoli 
 - Route `/error`: si viene indirizzati in caso di errori gravi lato server (come per esempio database non raggiungibile) e mostra un messaggio di errore, ma non è raggiungibile se non ci sono realmente errori
 
 
@@ -67,7 +67,7 @@
 
 
 - GET `/api/courses` 
-  - Descrizione: Restituisce la lista dei corsi con tutte le loro infornazioni
+  - Descrizione: Restituisce la lista dei corsi con tutte le loro informazioni
   - Request body: /
   - Response: `200 OK` 
   - Response body: 
@@ -179,16 +179,16 @@
 - `CourseRow` (in `StudyPlanApp/Courses/CourseList.js`): rappresenta una riga che contiene un corso tra quelli offerti con tutte le sue informazioni, i messaggi di errore in caso di violazione dei vincoli e il bottone per aggiungerlo al piano di studi
 - `StudyPlan` (in `StudyPlanApp/StudyPlan/StudyPlan.js`):  contiene la lista dei corsi aggiunti al piano di studi rappresentati dalla componente StudyPlan/CourseRow
 - `CourseRow` (in `StudyPlanApp/StudyPlan/StudyPlan.js`): rappresenta una riga che contiene un corso aggiunto al piano di studi e il pulsante per rimuoverlo dal piano di studi
-- `StudentInfo` (in `StudyPlanApp/StudyPlan/StudyPlan.js`): contiene informazioni sull'utente e sul piano di studi attuale, quali cfu, tipo, ...
+- `StudentInfo` (in `StudyPlanApp/StudyPlan/StudyPlan.js`): contiene informazioni sull'utente e sul piano di studi attuale, quali cfu e tipo
 
 ## Screenshot
 
-![Screenshot](./img/screenshot.jpg)
+![Screenshot](./client/img/logged-home-edit.png)
 
 ## Users Credentials
 
-- username: s1@polito.com, password: 1234 
-- username: s2@polito.com, password: 1234 
-- username: s3@polito.com, password: 1234 
-- username: s4@polito.com, password: 1234 
-- username: s5@polito.com, password: 1234 
+- username: s1@polito.com, password: 1234, FULLTIME
+- username: s2@polito.com, password: 1234, PARTIME
+- username: s3@polito.com, password: 1234, PARTIME
+- username: s4@polito.com, password: 1234, NON CREATO 
+- username: s5@polito.com, password: 1234, NON CREATO

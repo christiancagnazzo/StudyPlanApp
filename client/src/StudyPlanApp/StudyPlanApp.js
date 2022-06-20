@@ -74,7 +74,7 @@ function StudyPlanApp() {
 
     const doLogOut = async () => {
         await API.logOut();
-        setLoggedIn(true);
+        setLoggedIn(false);
         setUser(undefined);
         setCourses([]);
         setInitialCoursesLoading(true);
@@ -84,31 +84,61 @@ function StudyPlanApp() {
     return (
         <>
             <Container fluid className='cust'>
+
                 <UserContext.Provider value={user}>
                     <NavB logout={doLogOut} />
 
                     <Routes>
-                        <Route path="/" element={<Navigate to="/home" />} />
-                        <Route path="/home" element={initialCoursesLoading ? <InitialLoading /> : <HomeLayout courses={courses}></HomeLayout>} />
-                        <Route path="/login" element={<LoginForm login={doLogIn} message={loginMessage} setMessage={setLoginMessage} />} />
-                        <Route path="/error" element={errorMessage ? <ErrorLayout message={errorMessage} /> : <NotFoundLayout />} />
+
+                        <Route path="/"
+                            element={<Navigate to="/home" />}
+                        />
+
+                        <Route path="/login"
+                            element={<LoginForm login={doLogIn} message={loginMessage} setMessage={setLoginMessage} />}
+                        />
+
+                        <Route path="/home"
+                            element={initialCoursesLoading ? <InitialLoading /> : <HomeLayout courses={courses} />}
+                        />
+
+                        <Route path="/logged-home"
+                            element={initialCoursesLoading ? <InitialLoading /> :
+                                (
+                                    !loggedIn ? <Navigate to='/login' /> :
+                                        <LoggedHomeLayout
+                                            setInitialCoursesLoading={setInitialCoursesLoading}
+                                            courses={courses} setCourses={setCourses}
+                                            setErrorMessage={setErrorMessage}>
+                                        </LoggedHomeLayout>
+                                )
+                            }
+                        />
+
+                        <Route path="/logged-home/edit"
+                            element={initialCoursesLoading ? <InitialLoading /> :
+                                (
+                                    !loggedIn ? <Navigate to='/login' /> :
+                                        <LoggedHomeLayout
+                                            setInitialCoursesLoading={setInitialCoursesLoading}
+                                            courses={courses}
+                                            setCourses={setCourses}
+                                            setErrorMessage={setErrorMessage}>
+                                        </LoggedHomeLayout>
+                                )
+                            }
+                        />
+
+                        <Route path="/error"
+                            element={errorMessage ? <ErrorLayout message={errorMessage} /> : <NotFoundLayout />}
+                        />
+
                         <Route path="*" element={<NotFoundLayout />} />
-
-                        <Route path="/logged-home" element={
-                            initialCoursesLoading ? <InitialLoading /> : (
-                                !loggedIn ? <Navigate to='/login' /> : <LoggedHomeLayout setInitialCoursesLoading={setInitialCoursesLoading} courses={courses} setCourses={setCourses} setErrorMessage={setErrorMessage}></LoggedHomeLayout>
-                            )
-                        } />
-
-                        <Route path="/logged-home/edit" element={
-                            initialCoursesLoading ? <InitialLoading /> : (
-                                !loggedIn ? <Navigate to='/login' /> : <LoggedHomeLayout setInitialCoursesLoading={setInitialCoursesLoading} courses={courses} setCourses={setCourses} setErrorMessage={setErrorMessage}></LoggedHomeLayout>
-                            )
-                        } />
 
                     </Routes>
 
                 </UserContext.Provider>
+
             </Container>
         </>
     )

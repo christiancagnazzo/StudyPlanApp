@@ -63,10 +63,16 @@ function LoggedHomeLayout(props) {
         <>
             <Container fluid>
                 <Row>
+
                     { /* Left content */}
                     <Col className="col-6 mt-3 mx-0 px-0">
-                        {/* <h1 className='text-center title primary'>Courses</h1>  */}
-                        <CourseList courses={props.courses} setCourses={props.setCourses} studyPlan={studyPlan} setStudyPlan={setStudyPlan} updateCourseListInfoAdd={updateCourseListInfoAdd}></CourseList>
+                        <CourseList
+                            courses={props.courses}
+                            setCourses={props.setCourses}
+                            studyPlan={studyPlan}
+                            setStudyPlan={setStudyPlan}
+                            updateCourseListInfoAdd={updateCourseListInfoAdd}>
+                        </CourseList>
                     </Col>
 
                     { /* Right content */}
@@ -80,33 +86,49 @@ function LoggedHomeLayout(props) {
                             <Row className='mt-1'>
                                 <Container fluid>
                                     <Row>
+
+                                        {/* Button to create a study plan; disabled if study plan already exists */}
                                         <Col className='md-auto text-center'>
                                             <Link className={studyPlan.type !== '-' ? 'disabled-link' : ''} to="/logged-home/edit">
                                                 <Button disabled={studyPlan.type !== '-'} variant='warning'>Create your study plan</Button>
                                             </Link>
                                         </Col>
+
+                                        {/* Button to modify study plan; disabled if study plan doesn't exists */}
                                         <Col className='md-auto text-center'>
                                             <Link className={studyPlan.type === '-' || location.pathname === '/logged-home/edit' ? 'disabled-link' : ''} to="/logged-home/edit">
                                                 <Button disabled={studyPlan.type === '-' || location.pathname === '/logged-home/edit'} variant='warning'>Modify your study plan</Button>
                                             </Link>
                                         </Col>
+
+                                        {/* Button to delete study plan */}
                                         <Col className='md-auto text-center'>
-                                            <DeleteButton/>
+                                            <DeleteButton />
                                         </Col>
+
                                     </Row>
                                 </Container>
                             </Row>
+
+                            {/* Button to choose study plan type when it is created */}
                             <Row className='mt-3'>
                                 {location.pathname === '/logged-home/edit' && studyPlan.type === '-' ?
                                     <div className="btn-group btn-group-toggle">
-                                        <div onClick={() => { setStudyPlan((s) => { return Object.assign({}, s, { type: 'FULLTIME', mincfu: 60, maxcfu: 80 }) }) }} className={`btn btn-outline-warning ${studyPlan.type === 'FULLTIME' ? "type" : ""}`}>FULLTIME</div>
-                                        <div onClick={() => { setStudyPlan((s) => { return Object.assign({}, s, { type: 'PARTIME', mincfu: 20, maxcfu: 40 }) }) }} className={`btn btn-outline-warning ${studyPlan.type === 'PARTIME' ? "type" : ""}`}>PARTIME</div>
+                                        <div
+                                            className={`btn btn-outline-warning ${studyPlan.type === 'FULLTIME' ? "type" : ""}`}
+                                            onClick={() => { setStudyPlan((s) => { return Object.assign({}, s, { type: 'FULLTIME', mincfu: 60, maxcfu: 80 }) }) }}>
+                                            FULLTIME</div>
+                                        <div
+                                            className={`btn btn-outline-warning ${studyPlan.type === 'PARTIME' ? "type" : ""}`}
+                                            onClick={() => { setStudyPlan((s) => { return Object.assign({}, s, { type: 'PARTIME', mincfu: 20, maxcfu: 40 }) }) }}>
+                                            PARTIME</div>
                                     </div>
                                     : null
                                 }
                             </Row>
-
                             <hr></hr>
+
+                            {/* Load study plan if exists or a message */}
                             <Row>
                                 {studyPlan.courses.length > 0 ?
                                     <>
@@ -119,6 +141,7 @@ function LoggedHomeLayout(props) {
                                 }
                             </Row>
 
+                            {/* Error message */}
                             <Row>
                                 {location.pathname === '/logged-home/edit' && errorMessage.length > 0 ? < Alert variant='danger' onClose={() => setErrorMessage([])} dismissible>
                                     <ul>
@@ -127,10 +150,12 @@ function LoggedHomeLayout(props) {
                                 </Alert> : null}
                             </Row>
 
+                            {/* Buttons to save or cancel changes */}
                             {location.pathname === '/logged-home/edit' && studyPlan.type !== '-' ?
                                 <Row>
                                     <Col className='md-auto text-center'>
-                                        <SaveButton/>{' '}
+                                        <SaveButton />
+                                        {' '}
                                         <Button variant="warning" onClick={() => {
                                             props.setInitialCoursesLoading(true);
                                             setInitialStudyPlanLoading(true);
@@ -249,9 +274,7 @@ const HomeLayout = (props) => {
             <Container fluid>
                 <Row>
                     <Col className="mt-3">
-                        {/* <h1 className='text-center title'>Courses</h1>  */}
                         <CourseList courses={props.courses}></CourseList>
-
                     </Col>
                 </Row>
             </Container>

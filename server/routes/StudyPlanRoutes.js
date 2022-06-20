@@ -14,7 +14,7 @@ const isLoggedIn = async (req, res, next) => {
 /* ------------------------------------ */
 
 // This function is used to format express-validator errors as strings
-const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
+const errorFormatter = ({ location, msg, param }) => {
   return `${location} [${param}]: ${msg}`;
 };
 /* ------------------------------------ */
@@ -90,7 +90,7 @@ router.post('/studyPlan', isLoggedIn,
         /* check limit */
         if (c.maxStudents) {
           let students = await courseDao.studentsCourse(c.code);
-          if (students === c.maxStudents)
+          if (students === c.maxStudents && !courses.includes(c.code))
             error.push("Course '" + c.name + "' is full");
         }
 
@@ -129,12 +129,9 @@ router.post('/studyPlan', isLoggedIn,
       let id = await studyPlanDao.createStudyPlan(userId, req.body.type);
 
       for (let i = 0; i < courses.length; i++) {
-        try {
-          await studyPlanDao.insertCourseIntoSD(id, courses[i])
-        } catch (err) {
-          return res.status(500).json(err)
-        }
+        await studyPlanDao.insertCourseIntoSD(id, courses[i])
       }
+
     } catch (err) {
       return res.status(500).json(err)
     }

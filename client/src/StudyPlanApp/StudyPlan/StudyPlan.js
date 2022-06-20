@@ -45,7 +45,7 @@ function CourseRow(props) {
             if (props.course.incompatibles.map((c) => c.code).includes(c.code))
                 c.incompatible = false;
 
-            if (c.maxStudents){
+            if (c.maxStudents) {
                 c.full = false;
             }
 
@@ -61,13 +61,14 @@ function CourseRow(props) {
                 <td>{props.course.code}</td>
                 <td>{props.course.name}</td>
                 <td>{props.course.cfu}</td>
-                {
-                    location.pathname !== '/logged-home/edit' ? <td></td> : (
+
+                {/* Button to remove a course from the study plan */}
+                {location.pathname !== '/logged-home/edit' ? <td></td>
+                    : (
                         !props.studyPlan.courses.some(e => e.preparatory.code === props.course.code)
-                        ? <td>{<DashCircleFill onClick={() => removeCourse(props.course.code)} className='clickable' />}</td>
-                        : <td><Over></Over></td>
-                    )
-                }
+                            ? <td>{<DashCircleFill onClick={() => removeCourse(props.course.code)} className='clickable' />}</td>
+                            : <td><Over></Over></td>
+                    )}
             </tr>
         </tbody>
     )
@@ -103,11 +104,12 @@ function Over() {
         <>
             <OverlayTrigger
                 placement="bottom"
-                overlay={<Tooltip id="button-tooltip-2">The course is preparatory to another one selected in the study plan</Tooltip>}
-            >
+                overlay={<Tooltip id="button-tooltip-2">The course is preparatory to another one selected in the study plan</Tooltip>}>
+
                 {({ ref, ...triggerHandler }) => (
                     <BookmarkCheck {...triggerHandler} ref={ref} fill='blue' />
                 )}
+
             </OverlayTrigger>
         </>
     )

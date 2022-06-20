@@ -1,5 +1,4 @@
 const express = require("express");
-const { check, validationResult } = require('express-validator'); // validation middleware
 const router = express.Router();
 const courseDao = require('../dao/courseDao'); // module for accessing the DB
 

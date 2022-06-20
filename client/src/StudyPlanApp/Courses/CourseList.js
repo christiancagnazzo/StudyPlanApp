@@ -51,7 +51,7 @@ function CourseRow(props) {
                                             <Col className='col-1 col-md-1 '>
                                                 {location.pathname === '/logged-home/edit' && props.course.incompatible ? <ExclamationCircleFill fill='red' /> : null}
                                                 {location.pathname === '/logged-home/edit' && props.course.added ? <CheckCircleFill fill='green' /> : null}
-                                                {location.pathname === '/logged-home/edit' && (props.course.preparatory.code !== null && !props.studyPlan.courses.some( e => e.code === props.course.preparatory.code)) ? <BookmarkPlusFill fill='blue' /> : null}
+                                                {location.pathname === '/logged-home/edit' && (props.course.preparatory.code !== null && !props.studyPlan.courses.some(e => e.code === props.course.preparatory.code)) ? <BookmarkPlusFill fill='blue' /> : null}
                                                 {location.pathname === '/logged-home/edit' && props.course.full && !props.course.added ? <ExclamationCircleFill fill='red' /> : null}
                                             </Col>
                                             <Col className='col-2 col-md-2 code'>{props.course.code}</Col>
@@ -65,7 +65,7 @@ function CourseRow(props) {
                                 <Accordion.Body>
                                     {location.pathname === '/logged-home/edit' && props.course.incompatible ? <Alert variant='danger'>The course is incompatible with one of the following courses included in the study plan</Alert> : null}
                                     {location.pathname === '/logged-home/edit' && props.course.added ? <Alert variant='success'>Course already added</Alert> : null}
-                                    {location.pathname === '/logged-home/edit' && (props.course.preparatory.code !== null && !props.studyPlan.courses.some( e => e.code === props.course.preparatory.code)) ? <Alert variant='primary'>To be able to insert the course you must first insert its preparatory course in the study plan</Alert> : null}
+                                    {location.pathname === '/logged-home/edit' && (props.course.preparatory.code !== null && !props.studyPlan.courses.some(e => e.code === props.course.preparatory.code)) ? <Alert variant='primary'>To be able to insert the course you must first insert its preparatory course in the study plan</Alert> : null}
                                     {location.pathname === '/logged-home/edit' && props.course.full && !props.course.added ? <Alert variant='danger'>Course is full</Alert> : null}
                                     <Table>
                                         <thead>
@@ -78,7 +78,7 @@ function CourseRow(props) {
                                             <tr>
                                                 <td></td>
                                                 <td>
-                                                    {props.course.preparatory.code ? props.course.preparatory.code+" "+props.course.preparatory.name : ""}
+                                                    {props.course.preparatory.code ? props.course.preparatory.code + " " + props.course.preparatory.name : ""}
                                                 </td>
                                             </tr>
                                             {props.course.incompatibles.map((c) => {
@@ -98,20 +98,18 @@ function CourseRow(props) {
                     </Card>
                 </Col>
 
+                {/* Button to add a course to the study plan */}
                 <Col className='col-1 px-0 text-start'>
-                    { location.pathname === '/logged-home/edit' 
-                    && !props.course.added 
-                    && !props.course.incompatible
-                    && !props.course.full 
-                    && props.studyPlan.type !== '-'
-                    && (props.course.preparatory.code === null || props.studyPlan.courses.some( e => e.code === props.course.preparatory.code))
-                    ? 
-                        <PlusCircleFill className='clickable' onClick={() => {addCourseToStudyPlan()}}></PlusCircleFill> : null}
+                    {location.pathname === '/logged-home/edit'
+                        && !props.course.added
+                        && !props.course.incompatible
+                        && !props.course.full
+                        && props.studyPlan.type !== '-'
+                        && (props.course.preparatory.code === null || props.studyPlan.courses.some(e => e.code === props.course.preparatory.code))
+                        ?
+                        <PlusCircleFill className='clickable' onClick={() => { addCourseToStudyPlan() }}></PlusCircleFill> : null}
                 </Col>
-
             </Row>
-
-
         </>
     )
 
