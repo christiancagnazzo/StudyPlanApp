@@ -79,47 +79,49 @@ router.post('/studyPlan', isLoggedIn,
     /* check type */
     if (!type || (type !== 'PARTIME' && type !== 'FULLTIME')) {
       error.push("Type not valid");
-    }
+    
+    } else {
 
-    for (let i = 0; i < courses.length; i++) {
+      for (let i = 0; i < courses.length; i++) {
 
-      try {
+        try {
 
-        let c = await courseDao.getCourse(courses[i]);
+          let c = await courseDao.getCourse(courses[i]);
 
-        /* check limit */
-        if (c.maxStudents) {
-          let students = await courseDao.studentsCourseWithoutUser(c.code, userId);
-          if (students === c.maxStudents)
-            error.push("Course '" + c.name + "' is full");
-        }
-
-        /* check preparatory */
-        if (c.preparatory.code && !courses.some(e => e.code === c.preparatory.code)) {
-          error.push("Course '" + c.preparatory.name + "' is preparatory for '" + c.name + "' and must be included");
-        }
-
-        const incompatibles = await courseDao.incompatiblesCoursesByCode(c.code);
-
-        /* check incompatibilies */
-        for (let y = 0; y < incompatibles.length; y++) {
-          if (courses.includes(incompatibles[y].code)) {
-            error.push("Course '" + c.name + "' is incompatible with '" + incompatibles[y].name);
+          /* check limit */
+          if (c.maxStudents) {
+            let students = await courseDao.studentsCourseWithoutUser(c.code, userId);
+            if (students === c.maxStudents)
+              error.push("Course '" + c.name + "' is full");
           }
+
+          /* check preparatory */
+          if (c.preparatory.code && !courses.includes(c.preparatory.code)) {
+            error.push("Course '" + c.preparatory.name + "' is preparatory for '" + c.name + "' and must be included");
+          }
+
+          const incompatibles = await courseDao.incompatiblesCoursesByCode(c.code);
+
+          /* check incompatibilies */
+          for (let y = 0; y < incompatibles.length; y++) {
+            if (courses.includes(incompatibles[y].code)) {
+              error.push("Course '" + c.name + "' is incompatible with '" + incompatibles[y].name);
+            }
+          }
+
+          sum_cfu += c.cfu;
+        } catch (err) {
+          if (err.custom_msg)
+            error.push(err.custom_msg);
+          return res.status(500).json(err);
         }
+      };
 
-        sum_cfu += c.cfu;
-      } catch (err) {
-        if (err.custom_msg)
-          error.push(err.custom_msg);
-        return res.status(500).json(err);
-      }
-    };
-
-    /* check cfu */
-    if ((type === 'PARTIME' && (sum_cfu < 20 || sum_cfu > 40)) ||
-      (type === 'FULLTIME' && (sum_cfu < 60 || sum_cfu > 80)))
-      error.push("Credits entered higher or lower than the minimum and maximum credits of the career plan type");
+      /* check cfu */
+      if ((type === 'PARTIME' && (sum_cfu < 20 || sum_cfu > 40)) ||
+        (type === 'FULLTIME' && (sum_cfu < 60 || sum_cfu > 80)))
+        error.push("Credits entered higher or lower than the minimum and maximum credits of the career plan type");
+    }
 
     if (error.length > 0)
       return res.status(422).json({ error: error });

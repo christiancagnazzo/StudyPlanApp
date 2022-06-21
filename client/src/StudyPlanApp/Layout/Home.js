@@ -188,11 +188,8 @@ function LoggedHomeLayout(props) {
                 navigate('/logged-home');
             })
             .catch(err => {
-                if (err.myError) {
-                    setInitialStudyPlanLoading(true);
-                    props.setInitialCoursesLoading(true);
+                if (err.myError) 
                     setErrorMessage(err.myError);
-                }
                 else
                     handleError(err);
             });
