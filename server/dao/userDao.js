@@ -6,6 +6,7 @@ const crypto = require('crypto');
 
 // open the database
 const db = new sqlite.Database('PSDB.db', (err) => {
+    db.run("PRAGMA foreign_keys = ON");
     if (err) throw err;
 });
 

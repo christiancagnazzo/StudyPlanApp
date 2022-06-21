@@ -89,8 +89,8 @@ router.post('/studyPlan', isLoggedIn,
 
         /* check limit */
         if (c.maxStudents) {
-          let students = await courseDao.studentsCourse(c.code);
-          if (students === c.maxStudents && !courses.includes(c.code))
+          let students = await courseDao.studentsCourseWithoutUser(c.code, userId);
+          if (students === c.maxStudents)
             error.push("Course '" + c.name + "' is full");
         }
 

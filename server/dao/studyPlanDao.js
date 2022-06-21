@@ -54,7 +54,7 @@ exports.createStudyPlan = (userId, type) => {
         const max = type === 'FULLTIME' ? 80 : 40;
 
         const sql = 'INSERT INTO studyPlan(type, user, min, max) VALUES (?,?,?,?)';
-        db.run(sql, [type, userId, min, max ], function(err){
+        db.run(sql, [type, userId, min, max], function (err) {
             if (err) {
                 reject(err);
                 return
@@ -69,9 +69,9 @@ exports.createStudyPlan = (userId, type) => {
 // create study plan 
 exports.insertCourseIntoSD = (studyPlanId, courseId) => {
     return new Promise((resolve, reject) => {
-        
+
         const sql = 'INSERT INTO coursesStudyPlan VALUES (?,?)';
-        db.run(sql, [studyPlanId, courseId], function(err) {
+        db.run(sql, [studyPlanId, courseId], function (err) {
             if (err) {
                 reject(err);
                 return
@@ -128,3 +128,43 @@ exports.studyPlanCourses = (userId) => {
     });
 };
 
+/* TRANSACTION */
+
+exports.beginTransaction = () => {
+    return new Promise((resolve, reject) => {
+        const sql = 'begin transaction';
+
+        db.run(sql, (err) => {
+            if (err)
+                reject(err);
+            else
+                resolve(this);
+        });
+    });
+}
+
+exports.commitTransaction = () => {
+    return new Promise((resolve, reject) => {
+        const sql = 'commit';
+
+        db.run(sql, (err) => {
+            if (err)
+                reject(err);
+            else
+                resolve(this);
+        });
+    });
+}
+
+exports.rollbackTransaction = () => {
+    return new Promise((resolve, reject) => {
+        const sql = 'rollback';
+
+        db.run(sql, (err) => {
+            if (err)
+                reject(err);
+            else
+                resolve(this);
+        });
+    });
+}

@@ -3,7 +3,7 @@ import '../../css.css'
 import { StudyPlan, StudentInfo } from '../StudyPlan/StudyPlan';
 import { Container, Row, Col, Button, Alert, Modal } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import API from '../API';
 import { InitialLoading } from './Layout'
 
@@ -14,7 +14,8 @@ function LoggedHomeLayout(props) {
     const [errorMessage, setErrorMessage] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
-
+    const oldStudyPlan = useRef();
+    
     function handleError(err) {
         props.setErrorMessage(err);
         navigate('/error');
@@ -34,9 +35,12 @@ function LoggedHomeLayout(props) {
                             updated_courses.push(new_c);
                         }
 
+                        oldStudyPlan.current = Object.assign({}, info, { courses: updated_courses });
                         setStudyPlan(() => { return Object.assign({}, info, { courses: updated_courses }) });
-                    } else
+                    } else {
                         setStudyPlan(info); // empty study plan
+                        oldStudyPlan.current = info;
+                    }
                     setInitialStudyPlanLoading(false);
                     props.setErrorMessage([]);
                 })
@@ -158,8 +162,8 @@ function LoggedHomeLayout(props) {
                                         {' '}
                                         <Button variant="warning" onClick={() => {
                                             props.setInitialCoursesLoading(true);
-                                            setInitialStudyPlanLoading(true);
                                             setErrorMessage([]);
+                                            setStudyPlan(oldStudyPlan.current);
                                             navigate('/logged-home')
                                         }}>
                                             Cancel
@@ -184,8 +188,11 @@ function LoggedHomeLayout(props) {
                 navigate('/logged-home');
             })
             .catch(err => {
-                if (err.myError)
+                if (err.myError) {
+                    setInitialStudyPlanLoading(true);
+                    props.setInitialCoursesLoading(true);
                     setErrorMessage(err.myError);
+                }
                 else
                     handleError(err);
             });

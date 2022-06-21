@@ -4,6 +4,7 @@ const sqlite = require('sqlite3');
 
 // open the database
 const db = new sqlite.Database('PSDB.db', (err) => {
+    db.run("PRAGMA foreign_keys = ON");
     if (err) throw err;
 });
 
@@ -61,6 +62,22 @@ exports.studentsCourse = (code) => {
     return new Promise((resolve, reject) => {
         const sql = 'SELECT * FROM coursesStudyPlan WHERE course = ?';
         db.all(sql, [code], (err, rows) => {
+            if (err) {
+                reject(err);
+                return
+            }
+            const len = rows.length;
+            resolve(len);
+        });
+    });
+};
+
+// get number students of a course
+exports.studentsCourseWithoutUser = (code, user) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT * FROM coursesStudyPlan JOIN studyPlan  \
+                    ON studyPlan = id WHERE course = ? AND user != ?';
+        db.all(sql, [code, user], (err, rows) => {
             if (err) {
                 reject(err);
                 return
