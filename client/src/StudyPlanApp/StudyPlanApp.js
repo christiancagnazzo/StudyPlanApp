@@ -99,7 +99,11 @@ function StudyPlanApp() {
                         />
 
                         <Route path="/home"
-                            element={initialCoursesLoading ? <InitialLoading /> : <HomeLayout courses={courses} />}
+                            element={initialCoursesLoading ? <InitialLoading /> :
+                                (
+                                    loggedIn ? <Navigate to="/logged-home" /> :
+                                    <HomeLayout courses={courses} />)
+                            }
                         />
 
                         <Route path="/logged-home"

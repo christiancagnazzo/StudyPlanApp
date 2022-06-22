@@ -20,7 +20,7 @@ function NavB(props) {
                     {user ?
                         <>
                             <Navbar.Text>
-                                Signed in as: <Link to="/logged-home"><u>{user.name}</u></Link>
+                                Signed in as: <u>{user.name}</u>
                             </Navbar.Text>
                             <Nav.Item>
                                 <Button variant="dark" onClick={props.logout}>Logout</Button>
