@@ -187,8 +187,8 @@
 
 ## Users Credentials
 
-- username: s1@polito.com, password: 1234, FULLTIME
-- username: s2@polito.com, password: 1234, PARTIME
-- username: s3@polito.com, password: 1234, PARTIME
-- username: s4@polito.com, password: 1234, NON CREATO 
-- username: s5@polito.com, password: 1234, NON CREATO
+- username: s1@polito.com, password: 1234, STUDY PLAN FULLTIME
+- username: s2@polito.com, password: 1234, STUDY PLAN PARTIME
+- username: s3@polito.com, password: 1234, STUDY PLAN PARTIME
+- username: s4@polito.com, password: 1234, STUDY PLAN NON CREATO 
+- username: s5@polito.com, password: 1234, STUDY PLAN NON CREATO

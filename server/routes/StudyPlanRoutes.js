@@ -19,6 +19,7 @@ const errorFormatter = ({ location, msg, param }) => {
 };
 /* ------------------------------------ */
 
+const findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index)
 
 // GET /api/studyplan/
 // Get the study plan with the courses, if exists
@@ -81,6 +82,12 @@ router.post('/studyPlan', isLoggedIn,
       error.push("Type not valid");
     
     } else {
+
+      
+      let duplicates =  findDuplicates(courses);
+      if (duplicates.length){
+        error.push("Course/s "+ duplicates +" is/are duplicated");
+      }
 
       for (let i = 0; i < courses.length; i++) {
 
