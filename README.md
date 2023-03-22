@@ -1,21 +1,22 @@
-# Exam #1: Piano di studi 
-## Student: s304045 CAGNAZZO CHRISTIAN DAMIANO 
+# Study Plan App 
+
+A full-stack application to manage the university study plan. The project has been implemented for the  "Web Application I" university course.
 
 ## React Client Application Routes
 
-- Route `/`: reindirizza sempre ad `/home`
-- Route `/login`: contiene il form per effettuare il login
-- Route `/home`: contiene la lista dei corsi e le loro informazioni, è raggiungibile anche da utenti non loggati
-- Route `/logged-home`: contiene la lista dei corsi a sinistra e il piano di studi, se esiste, a destra; è raggiungibile solo da utenti non loggati
-- Route `/logged-home/edit`: come logged-home, ma in più abilita i pulsanti per editare il piano di studi e mostra informazioni aggiuntive riguardo ai corsi che non possono essere aggiunti o che sono soggetti a vincoli 
-- Route `/error`: si viene indirizzati in caso di errori gravi lato server (come per esempio database non raggiungibile) e mostra un messaggio di errore, ma non è raggiungibile se non ci sono realmente errori
+- Route `/`: always redirects to `/home`
+- Route `/login`: contains the form to login
+- Route `/home`: contains the list of courses and their information; it is also accessible by non-logged in users
+- Route `/logged-home`: contains the list of courses on the left and the study plan, if any, on the right; it is reachable only by logged in users
+- Route `/logged-home/edit`: as logged-home, but also enables buttons to edit the study plan and shows additional information about courses that cannot be added or that are subject to constraints 
+- Route `/error`: it is addressed in case of serious server-side errors (such as unreachable database) and shows an error message, but is not reachable if there are no errors
 
 
 ## API Server
 
 - POST `/api/sessions` 
-  - Descrizione: Permette di autenticare l'utente per inizializzare una sessione
-  - Request body: Oggetto contenente le credenziali dell'utente (Content-Type: application/json)
+  - Description: Allows to authenticate the user to initialize a session
+  - Request body: Object containing user credentials (Content-Type: application/json)
   
   ```
   {
@@ -25,7 +26,7 @@
   ```
 
   - Response: `200 OK` 
-  - Response body: Oggetto che rappresenta l'utente (Content-Type: application/json)
+  - Response body: Object that represents the user (Content-Type: application/json)
   ```
   {
     "id": 1,
@@ -33,15 +34,15 @@
     "name": "Utente s1"
   }
   ```
-  - Error response: `503 Service Unavailable` (errore generico), `401 Unauthorized` (Username e/o password errati)
+  - Error response: `503 Service Unavailable` (generic error), `401 Unauthorized` (Wrong username and/or password)
 
 ##
 
 - GET `/api/sessions/current` 
-  - Descrizione: Verifica se esiste una sessione autenticata
+  - Description: Check if an authenticated session exists
   - Request body: /
   - Response: `200 OK` 
-  - Response body: Oggetto che rappresenta l'utente (Content-Type: application/json)
+  - Response body: Object that represents the user (Content-Type: application/json)
   ```
   {
     "id": 1,
@@ -49,25 +50,25 @@
     "name": "Utente s1"
   }
   ```
-  - Error response: `503 Service Unavailable` (errore generico), `401 Unauthorized` (Utente non autenticato)
+  - Error response: `503 Service Unavailable` (generic error), `401 Unauthorized` (Unauthenticated user)
 
 
 ##
 
 
 - GET `/api/sessions/current` 
-  - Descrizione: Elimina la sessione corrente se esiste
+  - Description: Delete the current session if it exists
   - Request body: /
   - Response: `200 OK` 
   - Response body: /
-  - Error response: `503 Service Unavailable` (errore generico)
+  - Error response: `503 Service Unavailable` (generic error)
 
 
 ##
 
 
 - GET `/api/courses` 
-  - Descrizione: Restituisce la lista dei corsi con tutte le loro informazioni
+  - Description: Returns the list of courses with all their information
   - Request body: /
   - Response: `200 OK` 
   - Response body: 
@@ -95,12 +96,12 @@
       ...
     ]
     ```
-  - Error response: `500 Internal Server Error` (errore generico)
+  - Error response: `500 Internal Server Error` (generic error)
 
 ##
 
 - GET `/api/studyPlan` 
-  - Descrizione: Restituisce le informazioni del piano di studi (inclusi i corsi) dell'utente autenticato in sessione, se ne ha già creato uno
+  - Description: Returns the student plan information (including courses) of the user authenticated in session, if you have already created one
   - Request body: /
   - Response: `200 OK` 
   - Response body: 
@@ -130,23 +131,23 @@
     "cfu": 23
   }
   ```
-  - Error response: `500 Internal Server Error` (errore generico), `404 Not Found` (L'utente non ha uno study plan)
+  - Error response: `500 Internal Server Error` (generic error), `404 Not Found` (user does not have a study plan)
 
 
 ##
 
 - DELETE `/api/studyPlan` 
-  - Descrizione: Elimina il piano di studi, se esiste, dell'utente autenticato in sessione
+  - Description: Delete the authenticated session user’s study plan, if any
   - Request body: /
   - Response: `204 No Content` 
   - Response body: /
-  - Error response: `500 Internal Server Error` (errore generico)
+  - Error response: `500 Internal Server Error` (generic error)
 
 ##
 
 
 - POST `/api/studyPlan` 
-  - Descrizione: Sostituisce il vecchio study plan (se esisteva) dell'utente autenticato in sessione e ne crea uno nuovo, se i corsi inseriti non violano nessun vincolo
+  - Description: Replaces the old study plan (if any) of the user authenticated in session and creates a new one, if the courses entered do not violate any constraint
   - Request body: 
   ```
   {
@@ -156,7 +157,7 @@
   ```
   - Response: `201 Created` 
   - Response body: /
-  - Error response: `500 Internal Server Error` (errore generico), `422 Unprocessable Entity` (Uno o più corsi dello study plan non soddisfano dei vincoli)
+  - Error response: `500 Internal Server Error` (generic error), `422 Unprocessable Entity` (one or more study plan courses do not meet constraints)
 
 
 
@@ -164,22 +165,22 @@
 
 ## Database Tables
 
-- Table `course` - serve a memorizzare le informazioni di ogni corso, quali codice, nome, cfu, il suo corso propedeutico, se ce l'ha, e il limite di studenti, se ce l'ha
-- Table `incompatibleCourse` - contiene le coppie di corsi incompatibili
-- Table `user` - contiene gli utenti e le loro informazioni quali id, email, nome, password e salt
-- Table `studyPlan` - contiene le informazioni dei piani di studi, ovvero id, tipo, l'utente a cui appartiene e il minimo e massimo di crediti in base al tipo di piano di studi
-- Table `coursesStudyPlan` - tabella nata dalla relazione molti a molti tra "course" e "studyPlan"; memorizza i corsi assegnati ad ogni piano di studi
+- Table `course` - is used to store the information of each course, such as code, name, cfu, its preparatory course, if it has it, and the limit of students, if it has it
+- Table `incompatibleCourse` - contains pairs of incompatible courses
+- Table `user` - contains users and their information such as id, email, name, password and salt
+- Table `studyPlan` - contains the information of the study plans, that is id, type, the user to which it belongs and the minimum and maximum of credits according to the type of study plan
+- Table `coursesStudyPlan` - table born from the many to many relationship between "course" and "studyPlan"; memorizes the courses assigned to each study plan
 
 ## Main React Components
 
-- `StudyPlanApp` (in `StudyPlanApp/StudyPlanApp.js`): componente principale, definisce le route dell'applicazione e quali componenti renderizzare
-- `LoginForm` (in `StudyPlanApp/Layout/Login.js`): contiene il form per effettuare il login
-- `LoggedHomeLayout` (in `StudyPlanApp/Layout/Home.js`): componente che costruisce l'homepage dell'utente loggato, visualizzando a sinistra i corsi, e a destra informazioni sull'utente oltre al piano di studi, se esistente. Inoltre, presenta dei bottoni per creare, modificare, salvare o cancellare il piano di studi. 
-- `CourseList` (in `StudyPlanApp/Courses/CourseList.js`): contiene la lista dei corsi offerti rappresentati dalla componente Courses/CourseRow
-- `CourseRow` (in `StudyPlanApp/Courses/CourseList.js`): rappresenta una riga che contiene un corso tra quelli offerti con tutte le sue informazioni, i messaggi di errore in caso di violazione dei vincoli e il bottone per aggiungerlo al piano di studi
-- `StudyPlan` (in `StudyPlanApp/StudyPlan/StudyPlan.js`):  contiene la lista dei corsi aggiunti al piano di studi rappresentati dalla componente StudyPlan/CourseRow
-- `CourseRow` (in `StudyPlanApp/StudyPlan/StudyPlan.js`): rappresenta una riga che contiene un corso aggiunto al piano di studi e il pulsante per rimuoverlo dal piano di studi
-- `StudentInfo` (in `StudyPlanApp/StudyPlan/StudyPlan.js`): contiene informazioni sull'utente e sul piano di studi attuale, quali cfu e tipo
+- `StudyPlanApp` (in `StudyPlanApp/StudyPlanApp.js`): main component, defines the application routes and which components to render
+- `LoginForm` (in `StudyPlanApp/Layout/Login.js`): contains the form to login
+- `LoggedHomeLayout` (in `StudyPlanApp/Layout/Home.js`): component that builds the homepage of the logged in user, displaying on the left courses, and on the right information about the user in addition to the study plan, if any. It also has buttons to create, edit, save, or delete the plan
+- `CourseList` (in `StudyPlanApp/Courses/CourseList.js`): contains the list of courses offered represented by the Courses/CourseRow component
+- `CourseRow` (in `StudyPlanApp/Courses/CourseList.js`): represents a line that contains a course among those offered with all its information, error messages in case of violation of constraints and the button to add it to the study plan
+- `StudyPlan` (in `StudyPlanApp/StudyPlan/StudyPlan.js`):  contains the list of courses added to the study plan represented by the StudyPlan/CourseRow component
+- `CourseRow` (in `StudyPlanApp/StudyPlan/StudyPlan.js`): represents a line that contains a course added to the study plan and the button to remove it from the study plan
+- `StudentInfo` (in `StudyPlanApp/StudyPlan/StudyPlan.js`): contains information about the user and the current study plan, such as cfu and type
 
 ## Screenshot
 
